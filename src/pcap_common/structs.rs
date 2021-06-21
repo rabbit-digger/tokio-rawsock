@@ -3,7 +3,7 @@ use crate::common::InterfaceDescription;
 use crate::utils::cstr_to_string;
 use libc::{c_char, c_uchar, c_uint, c_ushort, c_void, timeval};
 use std::ffi::CStr;
-use std::mem::uninitialized;
+use std::mem::MaybeUninit;
 
 ///Raw PCap handle - created only to allow construction of pointers.
 pub enum PCapHandle {}
@@ -13,27 +13,27 @@ pub enum PCapDumper {}
 
 ///Wrapper around pcap error buffer
 pub struct PCapErrBuf {
-    buffer: [c_char; ERRBUF_SIZE],
+    buffer: MaybeUninit<[c_char; ERRBUF_SIZE]>,
 }
 
 ///Wrapper over unsafe pcap error buffer
 impl PCapErrBuf {
     ///Converts current content to a string
     pub fn as_string(&self) -> String {
-        unsafe { CStr::from_ptr(self.buffer.as_ptr()) }
+        unsafe { CStr::from_ptr(self.buffer.as_ptr() as *mut c_char) }
             .to_string_lossy()
             .into_owned()
     }
 
     ///Returns pointer to the underlying buffer.
     pub fn buffer(&mut self) -> *mut c_char {
-        self.buffer.as_mut_ptr()
+        self.buffer.as_mut_ptr() as *mut c_char
     }
 
     ///Creates a new instance.
     pub fn new() -> PCapErrBuf {
         PCapErrBuf {
-            buffer: unsafe { uninitialized() },
+            buffer: MaybeUninit::uninit(),
         }
     }
 }

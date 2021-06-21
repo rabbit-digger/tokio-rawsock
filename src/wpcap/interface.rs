@@ -10,7 +10,7 @@ use crate::utils::cstr_to_string;
 use crate::{traits, BorrowedPacket, DataLink, Error, Stats};
 use libc::{c_int, c_uint};
 use std::ffi::{CStr, CString};
-use std::mem::{transmute, uninitialized};
+use std::mem::{transmute, zeroed, MaybeUninit};
 
 const QUEUE_SIZE: usize = 65536 * 8; //min 8 packets
 
@@ -77,9 +77,9 @@ impl<'a> traits::DynamicInterface<'a> for Interface<'a> {
         let header = PCapPacketHeader {
             len: packet.len() as c_uint,
             caplen: packet.len() as c_uint,
-            ts: unsafe { uninitialized() },
+            ts: unsafe { zeroed() },
             #[cfg(any(target_os = "macos", target_os = "ios"))]
-            comment: unsafe { uninitialized() },
+            comment: unsafe { zeroed() },
         };
 
         let err = unsafe {
@@ -110,15 +110,18 @@ impl<'a> traits::DynamicInterface<'a> for Interface<'a> {
     }
 
     fn receive<'b>(&mut self) -> Result<BorrowedPacket, Error> {
-        let mut header: PCapPacketHeader = unsafe { uninitialized() };
+        let mut header = MaybeUninit::<PCapPacketHeader>::uninit();
         //TODO: replace pcap_next with pcap_next_ex to obtain more error information
-        let data = unsafe { self.dll.pcap_next(self.handle, &mut header) };
+        let data = unsafe { self.dll.pcap_next(self.handle, header.as_mut_ptr()) };
         if data.is_null() {
             Err(Error::ReceivingPacket(
                 "Unknown error when obtaining packet".into(),
             ))
         } else {
-            Ok(borrowed_packet_from_header(&header, data))
+            Ok(borrowed_packet_from_header(
+                &unsafe { header.assume_init() },
+                data,
+            ))
         }
     }
 
@@ -139,8 +142,9 @@ impl<'a> traits::DynamicInterface<'a> for Interface<'a> {
     }
 
     fn stats(&self) -> Result<Stats, Error> {
-        let mut stats: PCapStat = unsafe { uninitialized() };
-        if SUCCESS == unsafe { self.dll.pcap_stats(self.handle, &mut stats) } {
+        let mut stats = MaybeUninit::<PCapStat>::uninit();
+        if SUCCESS == unsafe { self.dll.pcap_stats(self.handle, stats.as_mut_ptr()) } {
+            let stats = unsafe { stats.assume_init() };
             Ok(Stats {
                 received: stats.ps_recv as u64,
                 dropped: stats.ps_drop as u64, //sp_ifdrop is not yet supported.
@@ -171,16 +175,20 @@ impl<'a> traits::DynamicInterface<'a> for Interface<'a> {
     }
 
     fn set_filter_cstr(&mut self, filter: &CStr) -> Result<(), Error> {
-        let mut bpf_filter: BpfProgram = unsafe { uninitialized() };
+        let mut bpf_filter = MaybeUninit::<BpfProgram>::uninit();
         let result = unsafe {
             self.dll
-                .pcap_compile(self.handle, &mut bpf_filter, filter.as_ptr(), 1, 0)
+                .pcap_compile(self.handle, bpf_filter.as_mut_ptr(), filter.as_ptr(), 1, 0)
         };
         if result != SUCCESS {
             return Err(self.last_error());
         }
-        let result = unsafe { self.dll.pcap_setfilter(self.handle, &mut bpf_filter) };
-        unsafe { self.dll.pcap_freecode(&mut bpf_filter) };
+
+        let result = unsafe {
+            self.dll
+                .pcap_setfilter(self.handle, bpf_filter.as_mut_ptr())
+        };
+        unsafe { self.dll.pcap_freecode(bpf_filter.as_mut_ptr()) };
         if result == SUCCESS {
             Ok(())
         } else {

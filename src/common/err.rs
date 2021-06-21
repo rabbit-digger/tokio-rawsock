@@ -1,67 +1,31 @@
 use dlopen::Error as DlopenError;
-use std::convert::From;
-use std::error::Error as ErrorTrait;
 use std::ffi::NulError;
-use std::fmt::{Display, Formatter, Result as FmtResult};
+use thiserror::Error;
 
 /// Error enumeration returned by this crate.
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum Error {
-    DllError(DlopenError),
+    #[error("{0}")]
+    DllError(#[from] DlopenError),
     ///Provided string could not be coverted into `std::ffi::CString` because it contained null
     /// character.
-    NullCharacter(NulError),
+    #[error("{0}")]
+    NullCharacter(#[from] NulError),
     ///The interface could not be opened.
+    #[error("{0}")]
     OpeningInterface(String),
     ///Receiving raw packet failed.
+    #[error("{0}")]
     ReceivingPacket(String),
     ///Sending raw packet failed.
+    #[error("{0}")]
     SendingPacket(String),
     ///Obtaining device description list failed.
+    #[error("{0}")]
     GettingDeviceDescriptionList(String),
     ///No paths were provided by the user
+    #[error("No library paths were provided.")]
     NoPathsProvided,
+    #[error("{0}")]
     LibraryError(String),
-}
-
-impl ErrorTrait for Error {
-    fn description(&self) -> &str {
-        match *self {
-            Error::DllError(ref err) => err.description(),
-            Error::NullCharacter(ref err) => err.description(),
-            Error::OpeningInterface(ref txt) => txt,
-            Error::ReceivingPacket(ref txt) => txt,
-            Error::SendingPacket(ref txt) => txt,
-            Error::GettingDeviceDescriptionList(ref txt) => txt,
-            Error::NoPathsProvided => "No library paths were provided.",
-            Error::LibraryError(ref txt) => txt,
-        }
-    }
-}
-
-impl Display for Error {
-    fn fmt(&self, f: &mut Formatter) -> FmtResult {
-        match *self {
-            Error::DllError(ref err) => err.fmt(f),
-            Error::NullCharacter(ref err) => err.fmt(f),
-            Error::OpeningInterface(ref txt) => f.write_str(txt),
-            Error::ReceivingPacket(ref txt) => f.write_str(txt),
-            Error::SendingPacket(ref txt) => f.write_str(txt),
-            Error::GettingDeviceDescriptionList(ref txt) => f.write_str(txt),
-            Error::NoPathsProvided => f.write_str("No library paths were provided."),
-            Error::LibraryError(ref txt) => f.write_str(txt),
-        }
-    }
-}
-
-impl From<::dlopen::Error> for Error {
-    fn from(err: DlopenError) -> Error {
-        Error::DllError(err)
-    }
-}
-
-impl From<NulError> for Error {
-    fn from(err: NulError) -> Error {
-        Error::NullCharacter(err)
-    }
 }
