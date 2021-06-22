@@ -1,4 +1,4 @@
-use tokio_rawsock::pcap;
+use tokio_rawsock::open_best_library;
 use tokio_rawsock::traits::Library;
 
 /*
@@ -7,7 +7,7 @@ by default. You can enable them by addding --ignored flag to your cargo testing 
 Some tests also may require administrative privileges.
 */
 
-fn choose_interf(lib: &pcap::Library) -> Option<String> {
+fn choose_interf(lib: &Box<dyn Library>) -> Option<String> {
     match lib.all_interfaces() {
         Ok(i) => match i.first() {
             Some(j) => Some(j.name.clone()),
@@ -19,10 +19,11 @@ fn choose_interf(lib: &pcap::Library) -> Option<String> {
 
 #[test]
 #[ignore]
-fn open_pcap() {
-    let pcap = pcap::Library::open_default_paths().expect("Could not open pcap library");
-    if let Some(ifname) = choose_interf(&pcap) {
-        let mut _interf = pcap
+fn list_devs() {
+    let lib = open_best_library().expect("Could not open pcap library");
+
+    if let Some(ifname) = choose_interf(&lib) {
+        let mut _interf = lib
             .open_interface(&ifname)
             .expect("Could not open interface");
         //on some interfaces there may be no traffic.

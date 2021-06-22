@@ -10,15 +10,11 @@ repository = "https://github.com/rabbit-digger/tokio-rawsock"
 categories = ["network-programming"]
 readme = "README.md"
 
-[badges.travis-ci]
-repository = "szymonwieloch/rust-rawsock"
-branch = "master"
-
 [badges.is-it-maintained-open-issues]
-repository = "szymonwieloch/rust-rawsock"
+repository = "rabbit-digger/tokio-rawsock"
 
 [dependencies]
-dlopen = "0.1.7"
+dlopen = "0.1.8"
 dlopen_derive = "0.1.4"
 libc = "0.2.60"
 time = "0.1"
