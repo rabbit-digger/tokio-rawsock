@@ -9,10 +9,7 @@ Some tests also may require administrative privileges.
 
 fn choose_interf(lib: &Box<dyn Library>) -> Option<String> {
     match lib.all_interfaces() {
-        Ok(i) => match i.first() {
-            Some(j) => Some(j.name.clone()),
-            None => None,
-        },
+        Ok(i) => i.first().map(|j| j.name.clone()),
         Err(_) => None,
     }
 }

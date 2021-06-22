@@ -84,7 +84,7 @@ pub trait Library: Send + Sync {
     where
         Self: Sized,
     {
-        Self::open_paths(Self::default_paths().iter().map(|s| *s))
+        Self::open_paths(Self::default_paths().iter().copied())
     }
 
     ///Returns list of default paths to the library on the given platform.

@@ -9,4 +9,4 @@ pub const DEFAULT_PATHS: [&'static str; 4] = [
 
 /// Default paths (os-specific) where the wpcap dynamically loaded library is stored.
 #[cfg(not(windows))]
-pub const DEFAULT_PATHS: [&'static str; 0] = [];
+pub const DEFAULT_PATHS: [&str; 0] = [];

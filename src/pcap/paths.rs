@@ -2,7 +2,7 @@
 
 /// Default paths (os-specific) where the pcap dynamically loaded library is stored.
 #[cfg(any(target_os = "macos", target_os = "ios"))]
-pub const DEFAULT_PATHS: [&'static str; 2] = ["libpcap.A.dylib", "libpcap.dylib"];
+pub const DEFAULT_PATHS: [&str; 2] = ["libpcap.A.dylib", "libpcap.dylib"];
 
 /// Default paths (os-specific) where the pcap dynamically loaded library is stored.
 #[cfg(all(unix, not(any(target_os = "macos", target_os = "ios"))))]
