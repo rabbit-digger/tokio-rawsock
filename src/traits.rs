@@ -15,7 +15,7 @@ pub trait DynamicInterface<'a>: Send + Sync {
     fn send(&self, packet: &[u8]) -> Result<(), Error>;
 
     ///Receives a raw packet.
-    fn receive<'b>(&'b mut self) -> Result<BorrowedPacket<'b>, Error>;
+    fn receive(&mut self) -> Result<BorrowedPacket<'_>, Error>;
 
     ///Flushes a queue
     fn flush(&self);

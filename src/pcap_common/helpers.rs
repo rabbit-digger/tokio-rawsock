@@ -2,7 +2,6 @@ use super::structs::PCapPacketHeader;
 use crate::BorrowedPacket;
 
 use libc::c_uchar;
-use std::mem::transmute;
 use std::slice::from_raw_parts;
 use time::Timespec;
 
@@ -25,7 +24,7 @@ pub extern "C" fn on_received_packet_static<F>(
 ) where
     F: FnMut(&BorrowedPacket),
 {
-    let callback: &mut F = unsafe { transmute(user) };
+    let callback = unsafe { &mut *(user as *mut F) };
 
     let packet = borrowed_packet_from_header(unsafe { &*h }, bytes);
     callback(&packet)
@@ -36,7 +35,7 @@ pub extern "C" fn on_received_packet_dynamic(
     h: *const PCapPacketHeader,
     bytes: *const c_uchar,
 ) {
-    let callback: &mut &mut dyn FnMut(&BorrowedPacket) = unsafe { transmute(user) };
+    let callback = unsafe { &mut *(user as *mut &mut dyn FnMut(&BorrowedPacket)) };
 
     let packet = borrowed_packet_from_header(unsafe { &*h }, bytes);
     callback(&packet)

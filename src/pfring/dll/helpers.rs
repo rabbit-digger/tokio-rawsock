@@ -71,7 +71,7 @@ pub fn string_from_pfring_err_code(err_code: c_int) -> String {
     }
 }
 
-pub fn borrowed_packet_from_header<'a, 'b>(
+pub(crate) fn borrowed_packet_from_header<'a, 'b>(
     header: &'a PFRingPacketHeader,
     data: *const u8,
 ) -> BorrowedPacket<'b> {

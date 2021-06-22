@@ -147,7 +147,7 @@ extern "C" fn on_received_packet_static<F>(
 ) where
     F: FnMut(&BorrowedPacket),
 {
-    let callback: &mut F = unsafe { transmute(user_bytes) };
+    let callback = unsafe { &mut *(user_bytes as *mut F) };
 
     let packet = borrowed_packet_from_header(unsafe { &*h }, p);
     callback(&packet)
@@ -158,7 +158,7 @@ extern "C" fn on_received_packet_dynamic(
     p: *const c_uchar,
     user_bytes: *const c_uchar,
 ) {
-    let callback: &mut &mut dyn FnMut(&BorrowedPacket) = unsafe { transmute(user_bytes) };
+    let callback = unsafe { &mut *(user_bytes as *mut &mut dyn FnMut(&BorrowedPacket)) };
 
     let packet = borrowed_packet_from_header(unsafe { &*h }, p);
     callback(&packet)

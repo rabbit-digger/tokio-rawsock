@@ -1,3 +1,4 @@
+#![allow(clippy::clippy::too_many_arguments)]
 use super::constants::MAX_NUM_RX_CHANNELS;
 use super::{
     ClusterType, PFRing, PFRingBpfProgram, PFRingChunkInfo, PFRingInterface, PFRingPacketHeader,

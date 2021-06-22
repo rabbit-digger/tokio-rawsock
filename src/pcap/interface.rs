@@ -51,8 +51,8 @@ impl<'a> Interface<'a> {
         };
 
         Ok(Interface {
-            dll,
             handle,
+            dll,
             datalink,
         })
     }

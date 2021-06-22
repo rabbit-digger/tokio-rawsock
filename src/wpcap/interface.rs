@@ -50,10 +50,10 @@ impl<'a> Interface<'a> {
         };
 
         Ok(Interface {
-            dll,
-            queue,
             handle,
+            dll,
             datalink,
+            queue,
         })
     }
 

@@ -38,6 +38,12 @@ impl PCapErrBuf {
     }
 }
 
+impl Default for PCapErrBuf {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 ///Equivalent of pcap_interf_t
 #[repr(C)]
 pub struct PCapInterface {

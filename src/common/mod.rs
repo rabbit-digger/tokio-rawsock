@@ -22,11 +22,9 @@ Opens optimal library available on the platform.
 ```no_run
 use tokio_rawsock::open_best_library;
 
-fn main(){
-    let lib = open_best_library().expect("Could not open any library.");
+let lib = open_best_library().expect("Could not open any library.");
 
-    // do something with the library
-}
+// do something with the library
 ```
 */
 pub fn open_best_library() -> Result<Box<dyn Library>, Error> {
