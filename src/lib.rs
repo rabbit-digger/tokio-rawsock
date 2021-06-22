@@ -24,8 +24,7 @@ or directly use the API of the given dynamically loaded library - for more advan
 # Quick example
 
 ```no_run
-extern crate rawsock;
-use rawsock::open_best_library;
+use tokio_rawsock::open_best_library;
 
 const ICMP_PACKET: [u8; 84] = [
 0x45, 0x00, 0x00, 0x54, 0xee, 0x96, 0x40, 0x00, 0x40, 0x01, 0x79, 0xf0, 0xc0, 0xa8, 0x01, 0x6a,
@@ -68,13 +67,10 @@ fn main() {
 ```
 
 */
-extern crate dlopen;
 #[macro_use]
 extern crate dlopen_derive;
 #[macro_use]
 extern crate bitflags;
-extern crate libc;
-extern crate time;
 #[macro_use]
 extern crate lazy_static;
 

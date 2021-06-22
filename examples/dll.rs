@@ -7,14 +7,12 @@
     functionality from your libraries.
 */
 
-extern crate dlopen;
-extern crate rawsock;
 use dlopen::wrapper::Container;
-use rawsock::pcap::dll::helpers::PCapErrBuf;
-use rawsock::pcap::dll::{PCapDll, PCapInterface, SUCCESS};
-use rawsock::pcap::DEFAULT_PATHS;
 use std::ffi::CStr;
 use std::ptr::null;
+use tokio_rawsock::pcap::dll::helpers::PCapErrBuf;
+use tokio_rawsock::pcap::dll::{PCapDll, PCapInterface, SUCCESS};
+use tokio_rawsock::pcap::DEFAULT_PATHS;
 
 fn open_library() -> Container<PCapDll> {
     for path in &DEFAULT_PATHS {

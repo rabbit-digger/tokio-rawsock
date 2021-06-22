@@ -1,5 +1,5 @@
-use rawsock::pcap;
-use rawsock::traits::Library;
+use tokio_rawsock::pcap;
+use tokio_rawsock::traits::Library;
 
 /*
 Tests in this module require correctly setup environment. Therefore they are disabled (ignored)

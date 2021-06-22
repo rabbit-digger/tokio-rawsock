@@ -1,11 +1,9 @@
-extern crate crossbeam_utils;
 /**
     Static and dispatch in a loop in a worker thread wih break on demand.
 */
-extern crate rawsock;
 use crossbeam_utils::thread;
-use rawsock::traits::{DynamicInterface, Library, StaticInterface};
-use rawsock::{open_best_library, pcap};
+use tokio_rawsock::traits::{DynamicInterface, Library, StaticInterface};
+use tokio_rawsock::{open_best_library, pcap};
 mod commons;
 use commons::open_library;
 use std::thread::sleep;

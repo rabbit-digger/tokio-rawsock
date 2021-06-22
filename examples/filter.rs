@@ -2,9 +2,8 @@
     The usage of filter.
 */
 
-extern crate rawsock;
 mod commons;
-use rawsock::open_best_library;
+use tokio_rawsock::open_best_library;
 
 fn main() {
     println!("Opening packet capturing library");

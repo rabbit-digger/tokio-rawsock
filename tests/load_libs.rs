@@ -7,9 +7,9 @@ This means that the library is found and all symbols can be loaded from the libr
 These tests require correct environmental setup to pass.
 */
 
-use rawsock::traits::Library;
+use tokio_rawsock::traits::Library;
 #[allow(unused_imports)]
-use rawsock::{pcap, pfring, wpcap};
+use tokio_rawsock::{pcap, pfring, wpcap};
 
 #[test]
 #[ignore]

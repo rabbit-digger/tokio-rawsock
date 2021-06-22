@@ -140,9 +140,8 @@ pub trait Library: Send + Sync {
     # Example
 
     ```no_run
-    extern crate rawsock;
-    use rawsock::open_best_library;
-    use rawsock::traits::Library;
+    use tokio_rawsock::open_best_library;
+    use tokio_rawsock::traits::Library;
 
     fn main(){
         let lib = open_best_library().expect("Could not open any library.");

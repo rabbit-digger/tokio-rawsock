@@ -20,8 +20,7 @@ Opens optimal library available on the platform.
 # Example
 
 ```no_run
-extern crate rawsock;
-use rawsock::open_best_library;
+use tokio_rawsock::open_best_library;
 
 fn main(){
     let lib = open_best_library().expect("Could not open any library.");

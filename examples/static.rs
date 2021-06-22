@@ -2,9 +2,8 @@
     Some application may require direct use of a concrete library.
     In tis case you should declare type of your library directly.
 */
-extern crate rawsock;
-use rawsock::traits::{DynamicInterface, Library};
-use rawsock::{pcap, pfring, wpcap};
+use tokio_rawsock::traits::{DynamicInterface, Library};
+use tokio_rawsock::{pcap, pfring, wpcap};
 mod commons;
 use self::commons::{open_library, ICMP_PACKET};
 

@@ -1,9 +1,8 @@
 /**
     Static and dynamic dispatch in a loop wih break on demand.
 */
-extern crate rawsock;
-use rawsock::traits::{DynamicInterface, Library, StaticInterface};
-use rawsock::{open_best_library, pcap};
+use tokio_rawsock::traits::{DynamicInterface, Library, StaticInterface};
+use tokio_rawsock::{open_best_library, pcap};
 mod commons;
 use self::commons::open_library;
 

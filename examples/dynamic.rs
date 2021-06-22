@@ -6,10 +6,9 @@
     For most applications this is the recommended approach.
 */
 
-extern crate rawsock;
 mod commons;
 use self::commons::ICMP_PACKET;
-use rawsock::open_best_library;
+use tokio_rawsock::open_best_library;
 
 fn main() {
     println!("Opening packet capturing library");

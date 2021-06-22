@@ -5,7 +5,7 @@ This packet has  arbitrary source and destination MAC addresses and you cannot e
 But it is useful for testing purposes since it is actually sent to the local network area.
 */
 
-use rawsock::traits::Library;
+use tokio_rawsock::traits::Library;
 
 pub const ICMP_PACKET: [u8; 84] = [
     0x45, 0x00, 0x00, 0x54, 0xee, 0x96, 0x40, 0x00, 0x40, 0x01, 0x79, 0xf0, 0xc0, 0xa8, 0x01, 0x6a,

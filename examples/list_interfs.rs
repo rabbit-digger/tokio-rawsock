@@ -3,9 +3,8 @@
     and you need a list of them.
 */
 
-extern crate rawsock;
-use rawsock::traits::Library;
-use rawsock::{open_best_library, pcap, InterfaceDescription};
+use tokio_rawsock::traits::Library;
+use tokio_rawsock::{open_best_library, pcap, InterfaceDescription};
 
 fn print_interfaces(interfs: Vec<InterfaceDescription>) {
     println!("Found interfaces:");
