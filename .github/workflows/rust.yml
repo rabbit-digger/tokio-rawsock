@@ -1,0 +1,72 @@
+on: [push, pull_request]
+
+name: Build
+
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache Cargo
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo
+          key: ${{ matrix.os }}-stable-cargo-v1
+          restore-keys: |
+            ${{ matrix.os }}-stable-cargo-v1
+      - name: Install libpcap (ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install libpcap-dev
+      - name: Install libpcap (macos)
+        if: matrix.os == 'macos-latest'
+        run: brew install libpcap
+      - name: Install WinPcap (windows)
+        if: matrix.os == 'windows-latest'
+        run: choco install winpcap
+      - name: Setup toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Run tests
+        run: cargo test --all -- --include-ignored --skip load_pfring
+      - name: Build release
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+
+  cross_compile:
+    name: Cross compile
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - armv7-unknown-linux-gnueabihf
+          - mipsel-unknown-linux-musl
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache Cargo
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo
+          key: ${{ matrix.target }}-stable-cargo-v1
+          restore-keys: |
+            ${{ matrix.target }}-stable-cargo-v1
+      - name: Setup toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+      - name: Build release
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target=${{ matrix.target }}
